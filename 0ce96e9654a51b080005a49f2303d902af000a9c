@@ -1,0 +1,12 @@
+problem: Replace partial Hugo GitHub Pages docs repo with mdBook
+approach: Removed Hugo theme/generated artifacts, converted docs scaffold into mdBook chapters, added Pages workflow, rebuilt history as a single main commit
+failed_paths:
+  - Prior Hugo scaffold with theme submodule and generated public output
+verification:
+  - mdbook build
+  - git log --oneline --decorate --all -n 5
+workflow_learning: For standalone Rust-adjacent docs sites, mdBook is a simpler fit than a themed SSG when markdown docs and Pages deploys are the goal
+related_files:
+  - book.toml
+  - src/SUMMARY.md
+  - .github/workflows/pages.yml
