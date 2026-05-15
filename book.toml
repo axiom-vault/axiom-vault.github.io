@@ -1,0 +1,18 @@
+[book]
+title = "AxiomVault Docs"
+authors = ["AxiomVault"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+site-url = "/"
+git-repository-url = "https://github.com/axiom-vault/axiom-vault.github.io"
+edit-url-template = "https://github.com/axiom-vault/axiom-vault.github.io/edit/main/{path}"
+no-section-label = true
+additional-css = []
