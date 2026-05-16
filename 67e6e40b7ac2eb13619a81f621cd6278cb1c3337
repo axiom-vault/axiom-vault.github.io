@@ -1,0 +1,16 @@
+problem: Improve mdBook docs based on feedback about product framing and missing security caveats
+approach: Reworked the homepage into a product-style overview, added threat model and current limitations pages, inserted Mermaid diagrams for key hierarchy/sync/vault layout, updated SUMMARY, verified with mdbook build, then pushed to origin/main
+failed_paths:
+  - Mermaid blocks build in mdBook without confirming browser-side rendering support in this repo
+verification:
+  - mdbook build
+  - git push origin main
+workflow_learning: For doc-site refreshes, pair product-oriented landing copy with explicit limitations pages so early-stage projects avoid overclaiming readiness
+related_files:
+  - src/README.md
+  - src/SUMMARY.md
+  - src/security.md
+  - src/sync-and-cloud.md
+  - src/vault-format.md
+  - src/threat-model.md
+  - src/current-limitations.md
