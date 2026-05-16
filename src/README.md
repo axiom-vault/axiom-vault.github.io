@@ -24,6 +24,8 @@ Today, the docs describe an **early-development** implementation centered on `ax
 | Recovery model | Password + recovery mnemonic wrapping the same master key |
 | Remote backends today | Google Drive, local filesystem |
 | Access layers | Native vault commands, optional FUSE mount, optional WebDAV |
+| MCP support | Not implemented or documented in this repo today |
+| Hardware-key support | Not implemented or documented in this repo today |
 | Project maturity | Early development, not production ready |
 
 ## Why it exists
@@ -39,6 +41,8 @@ Today, the docs describe an **early-development** implementation centered on `ax
 - [Security](security.md) — review the crypto model, trust assumptions, and safeguards.
 - [Threat Model](threat-model.md) — see which attackers and boundaries the design focuses on.
 - [Current Limitations](current-limitations.md) — understand what is incomplete or risky today.
+- [MCP Status](mcp-status.md) — see what MCP-related automation is and is not available today.
+- [YubiKey and Hardware Keys](yubikey-and-hardware-keys.md) — see the current lack of hardware-key integration claims.
 - [Architecture](architecture.md) — understand how `axiom-cli` and `axiom-core` fit together.
 - [Sync and Cloud](sync-and-cloud.md) — review current backend support and sync behavior.
 
@@ -50,6 +54,8 @@ Today, the docs describe an **early-development** implementation centered on `ax
 - Sync engine with conflict handling strategies
 - Optional FUSE mount and WebDAV access layers
 - Shared Rust core intended for reuse across clients
+- No documented MCP integration today
+- No documented YubiKey or hardware-key workflow today
 
 ## Repository components
 

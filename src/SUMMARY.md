@@ -8,6 +8,8 @@
 - [Sync and Cloud](sync-and-cloud.md)
 - [Security](security.md)
 - [Threat Model](threat-model.md)
+- [MCP Status](mcp-status.md)
+- [YubiKey and Hardware Keys](yubikey-and-hardware-keys.md)
 - [Current Limitations](current-limitations.md)
 - [Contributors](contributors.md)
 - [Repo Map](repo-map.md)
