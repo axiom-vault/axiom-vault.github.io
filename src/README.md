@@ -1,38 +1,63 @@
 # AxiomVault
 
-AxiomVault is a cross-platform encrypted vault built around **client-side encryption** and a **zero-knowledge** design.
+> Private files first. Cloud sync second.
 
-> Secure files locally first, then sync encrypted data to the cloud on your terms.
+AxiomVault is an **encrypted vault** for people who want local-first control with optional cloud sync.
+It is built around **client-side encryption**, a **zero-knowledge design goal**, and a CLI-first workflow that can grow into desktop and mobile clients over time.
 
-## Why AxiomVault
+## What AxiomVault is trying to be
 
-- **Private by default** — encryption happens before data leaves your machine.
-- **Cross-platform workflow** — a single vault experience built for CLI-driven use across environments.
-- **Flexible access** — work with local vault commands, sync flows, optional mounts, and WebDAV layers.
-- **Composable architecture** — `axiom-cli` and `axiom-core` are designed to evolve together.
+AxiomVault aims to make a simple promise:
+
+1. encrypt data on your device
+2. keep cloud providers unaware of plaintext contents
+3. let you move the same vault across machines without changing how it works
+
+Today, the docs describe an **early-development** implementation centered on `axiom-cli` and the shared `axiom-core` Rust workspace.
+
+## Product snapshot
+
+| Area | Current direction |
+| --- | --- |
+| Primary interface | CLI-driven vault management |
+| Encryption model | Client-side encryption before sync |
+| Recovery model | Password + recovery mnemonic wrapping the same master key |
+| Remote backends today | Google Drive, local filesystem |
+| Access layers | Native vault commands, optional FUSE mount, optional WebDAV |
+| Project maturity | Early development, not production ready |
+
+## Why it exists
+
+- **Private by default** — data is encrypted before it leaves your machine.
+- **Local-first workflow** — the vault remains useful even without a cloud connection.
+- **Composable architecture** — the same core is intended to serve CLI, sync, mount, and future client surfaces.
+- **Portable model** — a vault should be understandable as a product, not tied to one storage vendor.
 
 ## Start here
 
-- [Quickstart](quickstart.md) — install the CLI, create a vault, add a file, and run your first sync.
-- [Security](security.md) — review the encryption model, key handling, and readiness caveats.
-- [CLI Usage](cli.md) — learn the main `axiom` commands for vaults, files, remotes, mounts, and sync.
+- [Quickstart](quickstart.md) — create a vault, add a file, and run a first sync.
+- [Security](security.md) — review the crypto model, trust assumptions, and safeguards.
+- [Threat Model](threat-model.md) — see which attackers and boundaries the design focuses on.
+- [Current Limitations](current-limitations.md) — understand what is incomplete or risky today.
 - [Architecture](architecture.md) — understand how `axiom-cli` and `axiom-core` fit together.
+- [Sync and Cloud](sync-and-cloud.md) — review current backend support and sync behavior.
 
-## Main capabilities
+## Main capabilities in scope
 
 - Local encryption before data touches cloud storage
 - Vault lifecycle management from the CLI
-- Google Drive remote support
-- Sync engine with conflict resolution strategies
+- Encrypted file storage with a tree index
+- Sync engine with conflict handling strategies
 - Optional FUSE mount and WebDAV access layers
+- Shared Rust core intended for reuse across clients
 
-## What this workspace contains
+## Repository components
 
-- `axiom-cli` — command-line interface for creating, opening, mounting, and syncing vaults.
-- `axiom-core` — shared Rust library for encryption, storage, sync, FFI, WebDAV, and FUSE.
+- `axiom-cli` — commands for creating, opening, mounting, and syncing vaults.
+- `axiom-core` — shared Rust crates for crypto, storage, sync, FFI, WebDAV, and FUSE.
 
 ## Current status
 
-> This project is in early development and is **not production ready** yet.
->
-> Use these docs as a starting point for internal documentation, contributor onboarding, and future public product docs.
+> AxiomVault is in **early development**.
+> Expect rough edges, format changes, incomplete hardening, and missing operational polish.
+> These docs should help contributors and evaluators understand the direction of the project, not treat it as production-ready security guidance.

@@ -6,8 +6,8 @@ AxiomVault is still in **early development** and is **not production ready**.
 
 ## Security model
 
-- Client-side encryption only
-- Zero-knowledge architecture
+- Client-side encryption first
+- Zero-knowledge architecture as a design goal
 - Authenticated encryption on every chunk
 - Chunk ordering protection
 - Memory zeroization for key material
@@ -34,24 +34,25 @@ AxiomVault's security depends on these assumptions:
 
 ## Key hierarchy
 
-```text
-User password
-  |
-  v
-Argon2id(password, salt) --> Password KEK --> wraps Master Key
-                                             | derives file/dir keys (Blake2b)
+```mermaid
+flowchart TD
+    P[User password] --> A[Argon2id]
+    A --> PK[Password KEK]
+    PK --> WMK[Wrapped master key]
 
-Recovery key (24 BIP39 words, shown once)
-  |
-  v
-Blake2b(entropy, context) --> Recovery KEK --> wraps same Master Key
+    R[24-word recovery mnemonic] --> B[Blake2b context derivation]
+    B --> RK[Recovery KEK]
+    RK --> WMK
+
+    WMK --> MK[Master key in memory after unlock]
+    MK --> FK[Derived file and directory keys]
 ```
 
 The master key is randomly generated and stored only in wrapped form. Two independent KEKs can unwrap it: one from the password and one from the recovery mnemonic.
 
 ## File encryption
 
-Files are encrypted using chunked streaming encryption. Each chunk is independently authenticated, and chunk indices are included in authenticated data to prevent reordering or truncation.
+Files are encrypted using chunked streaming encryption. Each chunk is independently authenticated, and chunk indices are included in authenticated data to help detect reordering or truncation.
 
 ## Security practices
 
@@ -61,6 +62,20 @@ Files are encrypted using chunked streaming encryption. Each chunk is independen
 - `// SAFETY:` comments for every `unsafe` block
 - `Zeroize` and `ZeroizeOnDrop` on sensitive key material
 - Constant-time comparisons for sensitive equality checks
+
+## What this page does not claim
+
+This page describes the intended design and current implementation direction. It does **not** claim:
+
+- an external security audit
+- completed hardening across all platforms
+- a stable long-term vault format guarantee
+- safety against a compromised endpoint
+
+## Related pages
+
+- [Threat Model](threat-model.md)
+- [Current Limitations](current-limitations.md)
 
 ## Supported versions
 
