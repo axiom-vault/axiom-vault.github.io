@@ -2,12 +2,29 @@
 
 AxiomVault is a cross-platform encrypted vault built around **client-side encryption** and a **zero-knowledge** design.
 
+> Secure files locally first, then sync encrypted data to the cloud on your terms.
+
+## Why AxiomVault
+
+- **Private by default** — encryption happens before data leaves your machine.
+- **Cross-platform workflow** — a single vault experience built for CLI-driven use across environments.
+- **Flexible access** — work with local vault commands, sync flows, optional mounts, and WebDAV layers.
+- **Composable architecture** — `axiom-cli` and `axiom-core` are designed to evolve together.
+
 ## Start here
 
 - [Quickstart](quickstart.md) — install the CLI, create a vault, add a file, and run your first sync.
 - [Security](security.md) — review the encryption model, key handling, and readiness caveats.
 - [CLI Usage](cli.md) — learn the main `axiom` commands for vaults, files, remotes, mounts, and sync.
 - [Architecture](architecture.md) — understand how `axiom-cli` and `axiom-core` fit together.
+
+## Main capabilities
+
+- Local encryption before data touches cloud storage
+- Vault lifecycle management from the CLI
+- Google Drive remote support
+- Sync engine with conflict resolution strategies
+- Optional FUSE mount and WebDAV access layers
 
 ## What this workspace contains
 
@@ -17,13 +34,5 @@ AxiomVault is a cross-platform encrypted vault built around **client-side encryp
 ## Current status
 
 > This project is in early development and is **not production ready** yet.
-
-Use these docs as a starting point for internal documentation, contributor onboarding, and future public product docs.
-
-## Main capabilities
-
-- Local encryption before data touches cloud storage
-- Vault lifecycle management from the CLI
-- Google Drive remote support
-- Sync engine with conflict resolution strategies
-- Optional FUSE mount and WebDAV access layers
+>
+> Use these docs as a starting point for internal documentation, contributor onboarding, and future public product docs.

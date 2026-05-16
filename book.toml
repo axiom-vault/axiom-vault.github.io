@@ -15,4 +15,4 @@ site-url = "/"
 git-repository-url = "https://github.com/axiom-vault/axiom-vault.github.io"
 edit-url-template = "https://github.com/axiom-vault/axiom-vault.github.io/edit/main/{path}"
 no-section-label = true
-additional-css = []
+additional-css = ["theme/axiom.css"]
