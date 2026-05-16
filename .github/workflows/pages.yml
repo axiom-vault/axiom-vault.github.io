@@ -34,8 +34,10 @@ jobs:
             ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-mdbook-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install mdBook
-        run: cargo install mdbook --locked || true
+      - name: Install mdBook and Mermaid preprocessor
+        run: |
+          cargo install mdbook --locked || true
+          cargo install mdbook-mermaid --locked || true
 
       - name: Build book
         run: ~/.cargo/bin/mdbook build

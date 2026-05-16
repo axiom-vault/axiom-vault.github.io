@@ -10,6 +10,7 @@
 
 ```bash
 cd axiom-vault.github.io
+cargo install mdbook mdbook-mermaid
 mdbook serve --open
 ```
 
