@@ -11,6 +11,4 @@
 - [MCP Status](mcp-status.md)
 - [YubiKey and Hardware Keys](yubikey-and-hardware-keys.md)
 - [Current Limitations](current-limitations.md)
-- [Contributors](contributors.md)
-- [Repo Map](repo-map.md)
-- [Troubleshooting](troubleshooting.md)
+
