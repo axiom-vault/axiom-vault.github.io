@@ -17,6 +17,7 @@ h3 { letter-spacing: -0.02em;
 }.nav-chapters.mobile-nav-chapters { transition: transform 0.15s ease, opacity 0.15s ease;
 }.chapter li.part-title { color: var(--axiom-text-soft); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.72rem;
 }.chapter li a { border-radius: 10px; margin: 0.15rem 0;
-}.chapter li a:hover, .chapter li a.active { background: var(--axiom-bg-soft); text-decoration: none;
+}.chapter li a:hover,
+.chapter li a.active { background: var(--axiom-bg-soft); text-decoration: none;
 }.result-no-results { color: var(--axiom-text-soft);
 }
