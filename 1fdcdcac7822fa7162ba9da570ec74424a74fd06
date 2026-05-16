@@ -1,0 +1,11 @@
+problem: Refresh mdBook visuals for AxiomVault docs home and theme
+approach: Added a lightweight custom CSS theme, wired it through book.toml, tightened the docs homepage messaging, and verified with mdbook build
+failed_paths:
+  - None
+verification:
+  - mdbook build
+workflow_learning: For mdBook visual refreshes, prefer small CSS overrides in theme/ plus concise homepage improvements before changing templates
+related_files:
+  - book.toml
+  - theme/axiom.css
+  - src/README.md
