@@ -6,6 +6,8 @@
 curl -fsSL https://raw.githubusercontent.com/axiom-vault/axiom-cli/main/install.sh | bash
 ```
 
+Prefer a packaged release when available. If you use the install script, review it before execution and avoid running it on systems you do not trust with local credentials.
+
 Other install paths include GitHub Releases, Homebrew, and building from source.
 
 ## 2. Create a vault

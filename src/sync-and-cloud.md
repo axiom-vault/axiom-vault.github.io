@@ -52,4 +52,5 @@ axiom sync status --vault-path ~/my-vault
 
 - Sync correctness matters as much as encryption correctness for real users.
 - Remote providers may differ in metadata, retry, and error behavior.
+- OAuth tokens and local backend credentials should be handled as secrets and stored with restrictive permissions.
 - Treat backend support as evolving until compatibility guarantees are documented.

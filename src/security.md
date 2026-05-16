@@ -2,6 +2,7 @@
 
 ## Important warning
 AxiomVault is still in **early development** and is **not production ready**.
+Exact primitive choices, vault serialization details, and secret-handling behavior should be validated against the tagged `axiom-core` and `axiom-cli` source before production reliance; this page is documentation, not a substitute for code review.
 
 ## Security model
 - Client-side encryption first

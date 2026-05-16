@@ -40,6 +40,8 @@ axiom remote gdrive open \
   --tokens ~/gdrive-tokens.json
 ```
 
+Treat the OAuth token file as a secret: keep it out of version control, restrict filesystem permissions, and prefer platform secret storage when the implementation supports it.
+
 ### Planned remotes
 
 - iCloud
