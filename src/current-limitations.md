@@ -1,44 +1,34 @@
 # Current Limitations
 
-## Read this first
-AxiomVault is **not production ready**. The project is still shaping its format, sync behavior, and operational model.
+AxiomVault is **not production ready**. This page uses the [site status vocabulary](README.md#status-vocabulary) for `axiom-core@b6520ff` and `axiom-cli@7b436af`. Open issues describe planned work, not shipped fixes.
 
-## Product maturity limitations
-- Early-development codebase with evolving architecture
-- Documentation describes direction and current behavior, not a finished product contract
-- Vault format details may change before a stable compatibility promise exists
-- Security posture should be treated as promising but incomplete
+## High-impact boundaries
 
-## Security and assurance limitations
-- No claim of external security audit in these docs
-- No claim of formal verification or hardened release process
-- Endpoint compromise is still a major risk when a vault is unlocked
-- Optional access layers such as FUSE or WebDAV expand the exposed surface area
-- No current claim of YubiKey, smartcard, FIDO2, or other hardware-backed key protection
+| Boundary | Status | Consequence |
+| --- | --- | --- |
+| Multi-device convergence | **experimental-incomplete** | Remote downloads are not persisted before sync state can advance; do not use sync as backup/restore ([core #15](https://github.com/axiom-vault/axiom-core/issues/15)). |
+| Background sync | **scaffolded** | Modes/configuration exist without a verified long-running CLI lifecycle. |
+| Bounded-memory streaming | **unavailable** | Crypto and higher layers buffer complete data; large files can use memory proportional to size ([core #18](https://github.com/axiom-vault/axiom-core/issues/18), [CLI #24](https://github.com/axiom-vault/axiom-cli/issues/24)). |
+| Authenticated WebDAV | **unavailable** | The CLI endpoint is loopback-bound but unauthenticated; reusable core binding is not restricted to loopback ([core #12](https://github.com/axiom-vault/axiom-core/issues/12), [CLI #23](https://github.com/axiom-vault/axiom-cli/issues/23)). |
+| Local-only OAuth credentials | **unavailable** | Token-bearing provider config can be uploaded; affected credentials should be revoked/rotated ([core #11](https://github.com/axiom-vault/axiom-core/issues/11), [CLI #22](https://github.com/axiom-vault/axiom-cli/issues/22)). |
+| Snapshot rollback detection / TOFU | **unavailable** | Authentication does not establish freshness and no trusted anchor exists ([core #13](https://github.com/axiom-vault/axiom-core/issues/13)). |
+| Authenticated atomic migration | **experimental-incomplete** | Legacy FFI migration ignores its password and lacks complete rollback/recovery-output semantics ([core #17](https://github.com/axiom-vault/axiom-core/issues/17)). |
+| Plaintext local-index protection | **experimental-incomplete** | Optional SQLite metadata cache is not encrypted and its permission/wipe path does not consistently fail closed ([core #16](https://github.com/axiom-vault/axiom-core/issues/16)). |
 
-## Platform and backend limitations
-- Current remote support is limited to Google Drive and local filesystem workflows
-- Planned providers such as iCloud, Dropbox, and OneDrive are not yet current capabilities
-- No current MCP server or MCP client workflow is documented as a supported interface
-- Cross-platform behavior may still vary as the CLI and shared core mature
+## Additional limitations
 
-## Operational limitations
-- Recovery, conflict handling, and sync edge cases need continued testing
-- Background sync behavior depends on the surrounding client environment
-- OAuth token handling and local secret storage should be reviewed carefully before broader deployment
-- Observability, packaging, and installer polish are still incomplete
+- No external security audit, formal verification, or stable-format guarantee is claimed.
+- Vault mutations are not yet transactional across storage and the in-memory tree ([core #14](https://github.com/axiom-vault/axiom-core/issues/14)).
+- Endpoint compromise remains decisive while a vault is unlocked.
+- FUSE and WebDAV expose plaintext views and expand the attack surface.
+- iCloud, Dropbox, and OneDrive CLI workflows are **unavailable**.
+- Packaging, platform behavior, observability, and recovery edge cases remain immature.
+- The CLI pins an older core revision; fixes on core `main` do not reach CLI users automatically ([CLI #25](https://github.com/axiom-vault/axiom-cli/issues/25)).
 
-## Documentation limitations
-- Some pages describe intended design boundaries rather than battle-tested guarantees
-- Diagrams are simplified and do not replace code-level review
-- Newly added status pages for MCP and hardware keys are intentionally conservative and should not be read as feature promises
-- These docs should help contributors and evaluators, not serve as a certification of readiness
+## Credential response for existing cloud vaults
+
+If an affected revision created or opened a cloud vault, assume OAuth credentials may survive in provider history or backups. Revoke the grant, rotate client secrets where applicable, and re-authenticate only after both core and CLI credential-locality changes ship in the exact revision you run. Rewriting the newest config object is not sufficient to erase remote history.
 
 ## Recommended use today
-A reasonable current use case is:
-- internal development
-- architecture review
-- contributor onboarding
-- controlled experimentation with non-critical data
 
-Avoid presenting AxiomVault as a finished consumer security product until the project has stable releases, stronger compatibility guarantees, and broader verification.
+Use AxiomVault for source review, contributor onboarding, and controlled experiments with disposable, non-critical data. Keep independent backups outside AxiomVault. Do not expose WebDAV, depend on cloud convergence, or infer freshness from successful decryption.
