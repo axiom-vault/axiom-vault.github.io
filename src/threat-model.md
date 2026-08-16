@@ -2,94 +2,65 @@
 
 ## Status
 
-This threat model describes the **intended security boundaries** of AxiomVault in its current early-development state. It is not a claim of completed review, audit, or production hardening.
+This threat model separates implemented controls from design goals. It uses the [site status vocabulary](README.md#status-vocabulary) for `axiom-core@b6520ff` and `axiom-cli@7b436af`; linked issue work is not yet a shipped fix.
 
-## Security goals
+## Assets
 
-AxiomVault is designed to reduce risk in these areas:
-
-- Protect file contents before data is uploaded to a remote backend
-- Prevent storage providers from learning plaintext file data
-- Preserve integrity of encrypted chunks and vault metadata
-- Allow recovery of the same master key through either a password-derived key or a recovery mnemonic
-
-## Assets to protect
-
-- Master key
-- Password-derived KEK
-- Recovery-derived KEK
-- Plaintext file contents
-- Plaintext filenames and directory structure
-- OAuth tokens or remote credentials
-- Local vault configuration and sync state
+- Master key, password-derived key, and recovery mnemonic
+- Plaintext contents, filenames, hierarchy, sizes, and timestamps
+- OAuth access/refresh tokens, client secrets, and local credential files
+- Portable vault configuration and encrypted tree/object data
+- Local sync state, staging data, and optional plaintext SQLite index
 
 ## Trust boundaries
 
 ```mermaid
 flowchart LR
     U[User device] --> C[axiom-cli / axiom-core]
-    C --> E[Local encrypted vault]
+    C --> E[Local vault storage]
     C --> R[Remote backend]
     C --> M[Optional FUSE / WebDAV access]
-
-    subgraph Trusted more
-      U
-      C
-    end
-
-    subgraph Trusted less
-      R
-      M
-    end
 ```
 
-## Threats the design tries to address
+The endpoint and unlocked process are trusted. Remote storage, network peers, mount clients, and WebDAV clients are not trusted with plaintext. At the reviewed revisions, some implementation gaps cross those intended boundaries.
 
-### Remote storage compromise
+## Threats and current coverage
 
-If a cloud provider account or backend is read without access to vault keys, the design intends that the attacker sees encrypted blobs and encrypted metadata rather than plaintext file contents.
+| Threat | Status | Current coverage |
+| --- | --- | --- |
+| Remote reads or byte modification | **available** for authenticated confidentiality/integrity | Without vault keys, content encryption is intended to hide plaintext and reject modified authenticated bytes. Metadata leakage and implementation defects remain possible. |
+| Replay of an older valid snapshot | **unavailable** | No trusted freshness anchor or implemented TOFU enrollment rejects rollback ([core #13](https://github.com/axiom-vault/axiom-core/issues/13)). |
+| Multi-device divergence/data loss | **experimental-incomplete** | Sync can compare and download, but does not durably apply remote bytes before state transitions ([core #15](https://github.com/axiom-vault/axiom-core/issues/15)). |
+| OAuth credential disclosure through portable config | **unavailable** credential-locality guarantee | Tokens can be serialized into provider configuration and uploaded ([core #11](https://github.com/axiom-vault/axiom-core/issues/11), [CLI #22](https://github.com/axiom-vault/axiom-cli/issues/22)). |
+| Unauthenticated local WebDAV client | **unavailable** authentication | Any process able to reach the listener can request unlocked metadata/content or mutations. CLI loopback binding reduces network exposure but is not authentication ([core #12](https://github.com/axiom-vault/axiom-core/issues/12)). |
+| Large-file memory exhaustion or partial plaintext publication | **experimental-incomplete** | Chunk authentication exists, but end-to-end paths use whole buffers and safe atomic publication is not complete ([core #18](https://github.com/axiom-vault/axiom-core/issues/18), [CLI #24](https://github.com/axiom-vault/axiom-cli/issues/24)). |
+| Local plaintext metadata disclosure | **experimental-incomplete** | The optional SQLite index attempts owner-only permissions and wipe-on-lock, but does not consistently fail closed ([core #16](https://github.com/axiom-vault/axiom-core/issues/16)). |
+| Unauthorized or interrupted legacy migration | **experimental-incomplete** | Authentication, atomic rollback, and recovery-material ownership remain open ([core #17](https://github.com/axiom-vault/axiom-core/issues/17)). |
 
-### Network or transport observation
-
-AxiomVault assumes transport security still matters, but the main confidentiality control is local encryption before upload.
-
-### Chunk tampering or reordering
-
-Chunk authentication and authenticated chunk ordering are intended to detect modified, truncated, or reordered encrypted content.
-
-### Accidental secret exposure in logs
-
-The implementation aims to avoid plaintext secrets in logs and to zeroize sensitive key material where practical.
-
-## Threats not fully solved
+## Important scenarios
 
 ### Compromised endpoint
 
-If the user device is already compromised while the vault is unlocked, malware, keyloggers, or memory inspection can still expose plaintext data or credentials.
+A compromised device can read plaintext and credentials while the vault is unlocked. Client-side encryption does not defend against keyloggers, malicious builds, memory inspection, or a hostile client process.
 
-### Malicious or vulnerable dependencies
+### WebDAV and FUSE
 
-Client-side encryption does not protect against vulnerable build inputs, compromised packages, or malicious updates.
+These access layers deliberately expose plaintext views to local clients. WebDAV is especially unsafe in the reviewed implementation because protected methods are unauthenticated. The CLI selects `127.0.0.1`, but the reusable core accepts configurable binding without enforcing an exclusively loopback address. Do not expose it to a LAN or untrusted local users.
 
-### Unsafe access layers
+### Cloud history and credential rotation
 
-FUSE and WebDAV improve usability, but they also increase the attack surface and rely on the host OS and surrounding tooling to enforce access controls correctly.
+Removing credentials from a current object cannot remove prior remote versions, provider backups, or caches. Users of affected Google Drive workflows should revoke and rotate credentials as described in [Security](security.md#oauth-credentials-and-rotation).
+
+### Snapshot recovery and new devices
+
+Per-object authentication does not establish freshness. A first open on a new device has no trusted local history; current code does not implement an explicit TOFU ceremony or recovery override. Treat remote rollback detection as **unavailable**.
 
 ## Out of scope assumptions
 
-AxiomVault currently assumes:
-
-- the operating system is enforcing file permissions correctly
-- cryptographic primitives remain secure
-- reviewed source matches shipped binaries
-- users protect passwords, recovery phrases, and OAuth tokens
-
-## Open risks for an early project
-
-- limited external review and no production audit claim
-- possible vault format and sync behavior changes
-- incomplete hardening around operational edge cases
-- backend-specific bugs that may affect sync correctness or recovery workflows
+- The operating system and cryptographic libraries behave correctly.
+- Reviewed source matches the binary being run.
+- Users protect passwords, recovery phrases, and credential files.
+- A compromised unlocked endpoint cannot be made safe by storage encryption alone.
 
 ## See also
 

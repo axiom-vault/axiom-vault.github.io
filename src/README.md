@@ -2,68 +2,46 @@
 
 > Private files first. Cloud sync second.
 
-AxiomVault is an **encrypted vault** for people who want local-first control with optional cloud sync.
-It is built around **client-side encryption**, a **zero-knowledge design goal**, and a CLI-first workflow that can grow into desktop and mobile clients over time.
+AxiomVault is an early-development encrypted-vault project built around client-side encryption and a CLI-first workflow. Its zero-knowledge and multi-device behavior are **design goals**, not complete guarantees.
 
-## What AxiomVault is trying to be
+## Status vocabulary
 
-AxiomVault aims to make a simple promise:
+Every capability statement in this book uses one of these labels:
 
-1. encrypt data on your device
-2. keep cloud providers unaware of plaintext contents
-3. let you move the same vault across machines without changing how it works
+- **available** — implemented on the referenced default-branch revision; this is not a production-readiness claim.
+- **experimental-incomplete** — runnable, but a known correctness, security, or durability boundary is incomplete.
+- **scaffolded** — an API, command, or component exists, but the end-to-end behavior is not operationally verified.
+- **unavailable** — no verified implementation provides the behavior.
 
-Today, the docs describe an **early-development** implementation centered on `axiom-cli` and the shared `axiom-core` Rust workspace.
+The status below was checked against [`axiom-core@b6520ff`](https://github.com/axiom-vault/axiom-core/commit/b6520ff6e453cc1c2a74d78c25f11a35ec75408c) and [`axiom-cli@7b436af`](https://github.com/axiom-vault/axiom-cli/commit/7b436aff5a8d5236d075a9e2bfe7f998d171b83c), the current default-branch revisions reviewed for this update. The CLI pins an older core revision, so a fix on `axiom-core/main` is not a CLI fix until the pin is updated and compatibility is tested ([CLI #25](https://github.com/axiom-vault/axiom-cli/issues/25)). These labels do not claim that open fixes are shipped or released.
 
-## Product snapshot
+## Current capability snapshot
 
-| Area | Current direction |
-| --- | --- |
-| Primary interface | CLI-driven vault management |
-| Encryption model | Client-side encryption before sync |
-| Recovery model | Password + recovery mnemonic wrapping the same master key |
-| Remote backends today | Google Drive, local filesystem |
-| Access layers | Native vault commands, optional FUSE mount, optional WebDAV |
-| MCP support | Not implemented or documented in this repo today |
-| Hardware-key support | Not implemented or documented in this repo today |
-| Project maturity | Early development, not production ready |
-
-## Why it exists
-
-- **Private by default** — data is encrypted before it leaves your machine.
-- **Local-first workflow** — the vault remains useful even without a cloud connection.
-- **Composable architecture** — the same core is intended to serve CLI, sync, mount, and future client surfaces.
-- **Portable model** — a vault should be understandable as a product, not tied to one storage vendor.
+| Capability | Status | Current boundary |
+| --- | --- | --- |
+| Local CLI vault lifecycle and file commands | **available** | Early-development format and operational hardening still apply. |
+| Local and Google Drive storage providers | **experimental-incomplete** | Google Drive OAuth credentials can enter portable provider configuration; see [Sync and Cloud](sync-and-cloud.md). |
+| Multi-device sync convergence | **experimental-incomplete** | Remote downloads are not persisted before sync state can advance ([core #15](https://github.com/axiom-vault/axiom-core/issues/15)). |
+| Periodic/background sync | **scaffolded** | Configuration and scheduler types exist; the CLI is not a verified background-sync service. |
+| Bounded-memory streaming | **unavailable** | Chunk primitives exist, but file paths buffer complete data ([core #18](https://github.com/axiom-vault/axiom-core/issues/18)). |
+| FUSE mount | **experimental-incomplete** | Optional build/platform feature with an expanded plaintext access surface. |
+| WebDAV mount | **experimental-incomplete** | CLI binds to IPv4 loopback, but requests are unauthenticated and core does not enforce loopback ([core #12](https://github.com/axiom-vault/axiom-core/issues/12), [CLI #23](https://github.com/axiom-vault/axiom-cli/issues/23)). |
+| Snapshot rollback detection / trusted freshness | **unavailable** | AEAD integrity does not detect replay of an older valid snapshot ([core #13](https://github.com/axiom-vault/axiom-core/issues/13)). |
+| MCP workflow | **unavailable** | No supported MCP workflow is documented here. |
 
 ## Start here
 
-- [Quickstart](quickstart.md) — create a vault, add a file, and run a first sync.
-- [Security](security.md) — review the crypto model, trust assumptions, and safeguards.
-- [Threat Model](threat-model.md) — see which attackers and boundaries the design focuses on.
-- [Current Limitations](current-limitations.md) — understand what is incomplete or risky today.
-- [MCP Status](mcp-status.md) — see what MCP-related automation is and is not available today.
-- [YubiKey and Hardware Keys](yubikey-and-hardware-keys.md) — see the current lack of hardware-key integration claims.
-- [Architecture](architecture.md) — understand how `axiom-cli` and `axiom-core` fit together.
-- [Sync and Cloud](sync-and-cloud.md) — review current backend support and sync behavior.
-
-## Main capabilities in scope
-
-- Local encryption before data touches cloud storage
-- Vault lifecycle management from the CLI
-- Encrypted file storage with a tree index
-- Sync engine with conflict handling strategies
-- Optional FUSE mount and WebDAV access layers
-- Shared Rust core intended for reuse across clients
-- No documented MCP integration today
-- No documented YubiKey or hardware-key workflow today
+- [Quickstart](quickstart.md) — exercise verified local CLI commands.
+- [Security](security.md) — review implemented protections and incomplete boundaries.
+- [Threat Model](threat-model.md) — see attacker and trust assumptions.
+- [Current Limitations](current-limitations.md) — review the known gaps before experimenting.
+- [Architecture](architecture.md) — understand how the CLI and core fit together.
+- [Sync and Cloud](sync-and-cloud.md) — review provider, sync, and credential status.
+- [MCP Status](mcp-status.md) and [YubiKey and Hardware Keys](yubikey-and-hardware-keys.md) — feature-specific status pages.
 
 ## Repository components
 
-- `axiom-cli` — commands for creating, opening, mounting, and syncing vaults.
-- `axiom-core` — shared Rust crates for crypto, storage, sync, FFI, WebDAV, and FUSE.
+- `axiom-cli` — the command surface for local vaults, remotes, sync, and mounts.
+- `axiom-core` — shared Rust crates for crypto, vault, storage, sync, FFI, WebDAV, and FUSE.
 
-## Current status
-
-> AxiomVault is in **early development**.
-> Expect rough edges, format changes, incomplete hardening, and missing operational polish.
-> These docs should help contributors and evaluators understand the direction of the project, not treat it as production-ready security guidance.
+> AxiomVault is **not production ready**. Use non-critical data only, expect format changes, and verify the exact revision you run.
